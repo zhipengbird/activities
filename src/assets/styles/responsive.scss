@@ -1,0 +1,168 @@
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:meta';
+
+// 设计稿宽度（与实际项目保持一致）
+$design-width: 375px;
+$base-font-size: 16px;
+
+// 断点
+$breakpoints: (
+  'xs': 320px,
+  'sm': 360px,
+  'md': 393px,
+  'lg': 414px,
+  'tablet': 768px,
+  'desktop': 1024px,
+  'wide': 1920px,
+);
+
+// vw 函数 - 基于设计稿宽度
+@function vw($px) {
+  @return calc((strip-unit($px) / strip-unit($design-width)) * 100vw);
+}
+
+// rem 函数
+@function rem($px) {
+  @if meta.type-of($px) == 'number' {
+    @return #{math.div($px, strip-unit($base-font-size))}rem;
+  }
+  @return $px;
+}
+
+// strip-unit
+@function strip-unit($number) {
+  @if meta.type-of($number) == 'number' and not math.is-unitless($number) {
+    @return math.div($number, ($number * 0 + 1));
+  }
+  @return $number;
+}
+
+// 响应式媒体查询
+@mixin respond-to($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-from($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-between($min, $max) {
+  @if map.has-key($breakpoints, $min) and map.has-key($breakpoints, $max) {
+    @media screen and (min-width: map.get($breakpoints, $min)) and (max-width: map.get($breakpoints, $max)) {
+      @content;
+    }
+  }
+}
+
+// DPR 适配
+@mixin device-pixel-ratio($dpr: 2) {
+  @media screen and (-webkit-min-device-pixel-ratio: $dpr),
+         screen and (min-resolution: #{$dpr * 96}dpi),
+         screen and (min-resolution: #{$dpr}dppx) {
+    @content;
+  }
+}
+
+// 响应式字体
+@mixin responsive-font-size($min-size, $max-size) {
+  $min-size-value: strip-unit($min-size);
+  $max-size-value: strip-unit($max-size);
+  font-size: $max-size;
+  @supports (font-size: clamp(1px, 1vw, 100px)) {
+    font-size: clamp(#{$min-size}, #{vw($min-size-value)}, #{$max-size});
+  }
+  @supports not (font-size: clamp(1px, 1vw, 100px)) {
+    @include respond-to('desktop') {
+      font-size: calc(
+        #{$min-size} + (#{$max-size-value} - #{$min-size-value}) * ((100vw - 320px) / (1024 - 320))
+      );
+    }
+    @include respond-to('xs') {
+      font-size: $min-size;
+    }
+  }
+}
+
+// 1px 边框适配
+@mixin border-1px($color: #ccc, $radius: 0, $position: all) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200%;
+    height: 200%;
+    border: 0;
+    @if $position == all {
+      border: 1px solid $color;
+    } @else if $position == top {
+      border-top: 1px solid $color;
+    } @else if $position == bottom {
+      border-bottom: 1px solid $color;
+    } @else if $position == left {
+      border-left: 1px solid $color;
+    } @else if $position == right {
+      border-right: 1px solid $color;
+    }
+    @if $radius != 0 {
+      border-radius: $radius;
+    }
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+  @include device-pixel-ratio(3) {
+    &::after {
+      width: 300%;
+      height: 300%;
+      transform: scale(0.33);
+    }
+  }
+}
+
+// html 字体大小适配（建议在 main.scss 或入口样式中引用）
+@mixin html-root-font-size() {
+  html {
+    font-size: $base-font-size !important;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    @include respond-to('wide') {
+      font-size: calc(#{$base-font-size} * 0.95);
+    }
+    @include respond-to('desktop') {
+      font-size: calc(#{$base-font-size} * 0.9);
+    }
+    @include respond-to('tablet') {
+      font-size: calc(#{$base-font-size} * 0.85);
+    }
+    @include respond-to('lg') {
+      font-size: calc(#{$base-font-size} * 0.8);
+    }
+    @include respond-to('md') {
+      font-size: calc(#{$base-font-size} * 0.75);
+    }
+    @include respond-to('sm') {
+      font-size: calc(#{$base-font-size} * 0.7);
+    }
+    @include respond-to('xs') {
+      font-size: calc(#{$base-font-size} * 0.65);
+    }
+    @include device-pixel-ratio(2) {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+}
