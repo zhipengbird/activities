@@ -44,49 +44,31 @@ import person from '@/assets/images/jiujiang/person.gif';
 export interface ImageItem {
     src: string;
     name: string;
-    className: [string];
+    className: string[];
 }
 
 export const imageList: ImageItem[] = [
-    { src: zero01, name: '0-0', className: ['zero-0'] },
-    { src: zer002, name: '0-1', className: ['zero-1'] },
-    { src: one01, name: '1-0', className: ['one-0'] },
-    { src: one02, name: '1-1', className: ['one-1'] },
-    { src: one03, name: '1-2', className: ['one-2'] },
-    { src: one04, name: '1-3', className: ['one-3'] },
-    { src: one05, name: '1-4', className: ['one-4'] },
-    { src: two01, name: '2-0', className: ['two-0'] },
-    { src: two02, name: '2-1', className: ['two-1'] },
-    { src: three01, name: '3-0', className: ['three-0'] },
-    { src: three02, name: '3-1', className: ['three-1'] },
-    { src: three03, name: '3-2', className: ['three-2'] },
-    { src: three04, name: '3-3', className: ['three-3'] },
-    { src: three05, name: '3-4', className: ['three-4'] },
-    { src: three06, name: '3-5', className: ['three-5'] },
-    { src: four01, name: '4-0', className: ['four-0'] },
-    { src: four02, name: '4-1', className: ['four-1'] },
-    { src: four03, name: '4-2', className: ['four-2'] },
-    { src: five01, name: '5-0', className: ['five-0'] },
-    { src: five02, name: '5-1', className: ['five-1'] },
-    { src: six01, name: '6-0', className: ['six-0'] }
-
-
-
-    // { src: one06, name: '1-5', width: 100, height: 100, left: 0, top: 0 },
-    // { src: two01, name: '2-0', width: 100, height: 100, left: 0, top: 0 },
-    // { src: two02, name: '2-1', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three01, name: '3-0', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three02, name: '3-1', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three03, name: '3-2', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three04, name: '3-3', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three05, name: '3-4', width: 100, height: 100, left: 0, top: 0 },
-    // { src: three06, name: '3-5', width: 100, height: 100, left: 0, top: 0 },
-    // { src: four01, name: '4-0', width: 100, height: 100, left: 0, top: 0 },
-    // { src: four02, name: '4-1', width: 100, height: 100, left: 0, top: 0 },
-    // { src: four03, name: '4-2', width: 100, height: 100, left: 0, top: 0 },
-    // { src: five01, name: '5-0', width: 100, height: 100, left: 0, top: 0 },
-    // { src: five02, name: '5-1', width: 100, height: 100, left: 0, top: 0 },
-    // { src: six01, name: '6-0', width: 100, height: 100, left: 0, top: 0 }
+    { src: zero01, name: '0-0', className: ['zero-0', 'animate__lightSpeedInLeft','animate__pulse','animate__slow'] },
+    { src: zer002, name: '0-1', className: ['zero-1','animate__fadeInDownBig'] },
+    { src: one01, name: '1-0', className: ['one-0','animate__fadeInUpBig'] },
+    { src: one02, name: '1-1', className: ['one-1','animate__fadeInUpBig'] },
+    { src: one03, name: '1-2', className: ['one-2','animate__fadeInDownBig'] },
+    { src: one04, name: '1-3', className: ['one-3','animate__fadeInUpBig'] },
+    { src: one05, name: '1-4', className: ['one-4','animate__fadeInUpBig'] },
+    { src: two01, name: '2-0', className: ['two-0','animate__fadeInDownBig'] },
+    { src: two02, name: '2-1', className: ['two-1','animate__fadeInUpBig'] },
+    { src: three01, name: '3-0', className: ['three-0','animate__fadeInDownBig'] },
+    { src: three02, name: '3-1', className: ['three-1','animate__fadeInUpBig'] },
+    { src: three03, name: '3-2', className: ['three-2','animate__fadeInDownBig'] },
+    { src: three04, name: '3-3', className: ['three-3','animate__fadeInUpBig'] },
+    { src: three05, name: '3-4', className: ['three-4','animate__fadeInUpBig'] },
+    { src: three06, name: '3-5', className: ['three-5', 'animate__fadeInDownBig'] },
+    { src: four01, name: '4-0', className: ['four-0', 'animate__fadeInUpBig'] },
+    { src: four02, name: '4-1', className: ['four-1','animate__fadeInUpBig'] },
+    { src: four03, name: '4-2', className: ['four-2','animate__fadeInDownBig'] },
+    { src: five01, name: '5-0', className: ['five-0','animate__fadeInUpBig'] },
+    { src: five02, name: '5-1', className: ['five-1','animate__fadeInDownBig'] },
+    { src: six01, name: '6-0', className: ['six-0','animate__jackInTheBox'] }
 ]
 
 
