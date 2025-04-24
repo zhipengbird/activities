@@ -202,7 +202,7 @@ $breakpoints: (
       font-size: calc(#{$base-font-size} * 1.5) !important;
     }
     @include respond-to('desktop') {
-      font-size: calc(#{$base-font-size} * 1.6) !important;
+      font-size: calc(#{$base-font-size} * 3.4) !important;
     }
     @include respond-to('tablet') {
       font-size: calc(#{$base-font-size} * 1.14) !important;
@@ -214,10 +214,10 @@ $breakpoints: (
       font-size: calc(#{$base-font-size} * 1) !important;
     }
     @include respond-to('sm') {
-      font-size: calc(#{$base-font-size} * 0.95) !important;
+      font-size: calc(#{$base-font-size} * 0.91) !important;
     }
     @include respond-to('xs') {
-      font-size: calc(#{$base-font-size} * 1.2) !important;
+      font-size: calc(#{$base-font-size} * 1) !important;
     }
     
     // 特定设备优先级更高，放在后面

@@ -44,6 +44,11 @@ const detectIPad = (): boolean => {
   return isIpad || isMacButHasTouchScreen;
 };
 
+// 屏幕方向检测
+const detectPortrait = (): boolean => {
+  return window.innerHeight > window.innerWidth;
+};
+
 // 环境变量
 export const ENV = {
   // 设备类型
@@ -62,17 +67,28 @@ export const ENV = {
   viewportWidth: window.innerWidth,
   viewportHeight: window.innerHeight,
   
+  // 屏幕方向
+  isPortrait: detectPortrait(),
+  
+  // 更新视口和方向信息的方法
+  updateViewport: () => {
+    ENV.viewportWidth = window.innerWidth;
+    ENV.viewportHeight = window.innerHeight;
+    ENV.isPortrait = detectPortrait();
+    return ENV; // 返回更新后的ENV便于链式调用
+  },
+  
   // 其他环境变量，可以在这里扩展
   // ...
 };
 
 // 监听窗口大小变化，更新视口信息
 window.addEventListener('resize', () => {
-  ENV.viewportWidth = window.innerWidth;
-  ENV.viewportHeight = window.innerHeight;
+  ENV.updateViewport();
 
   console.log('当前窗口宽度:', ENV.viewportWidth);
   console.log('是否为iPad:', ENV.isIPad);
+  console.log('屏幕方向:', ENV.isPortrait ? '竖屏' : '横屏');
   
   // 检测命中了哪个断点
   if (ENV.viewportWidth <= 320) console.log('命中断点: xs');
@@ -92,9 +108,16 @@ window.addEventListener('resize', () => {
   });
 });
 
+// 监听屏幕方向变化
+window.addEventListener('orientationchange', () => {
+  ENV.updateViewport();
+  console.log('屏幕方向变化:', ENV.isPortrait ? '竖屏' : '横屏');
+});
+
 // 初始化时也输出一次日志
 console.log('初始化视口宽度:', ENV.viewportWidth);
 console.log('是否为iPad:', ENV.isIPad);
 console.log('设备UserAgent:', navigator.userAgent);
+console.log('初始屏幕方向:', ENV.isPortrait ? '竖屏' : '横屏');
 
 export default ENV; 

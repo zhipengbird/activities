@@ -1,5 +1,8 @@
 <template>
-  <div :class="['civilization-container', ENV.isMobile ? 'mobile' : '']">
+  <div :class="[
+    'civilization-container', 
+    ENV.isMobile ? 'mobile' : '',
+  ]">
     <BScroll
       ref="scrollRef"
       @bs="handleBs"
@@ -21,6 +24,7 @@
       <div class="media-info">
         <p>屏幕宽度: {{ ENV.viewportWidth }}px</p>
         <p>屏幕高度: {{ ENV.viewportHeight }}px</p>
+        <p>方向: {{ ENV.isPortrait ? '竖屏' : '横屏' }}</p>
         <p>设备像素比: {{ devicePixelRatio }}</p>
         <p>UserAgent: {{ userAgent }}</p>
         <div class="media-matches">
@@ -95,14 +99,20 @@ const checkMediaMatches = () => {
 const handleResize = () => {
   checkMediaMatches();
   // 更新其他信息
-  ENV.viewportWidth = window.innerWidth;
-  ENV.viewportHeight = window.innerHeight;
   devicePixelRatio.value = window.devicePixelRatio;
 };
 
 const handleBs = (bs: InstanceType<typeof BetterScroll>) => {
   console.log(bs);
+  
+  // 在手机竖屏模式下进行特殊处理
+  if (ENV.isMobile && ENV.isPortrait) {
+    // 例如设置旋转相关的选项
+    // bs.options.rotate = 90; // 假设BetterScroll支持这个选项
+    bs.refresh();
+  }
 };
+
 // 滚动处理
 const handleScroll = (pos: { x: number; y: number }) => {
   //   scrollPos.x = pos.x;
@@ -112,10 +122,12 @@ const handleScroll = (pos: { x: number; y: number }) => {
 onMounted(() => {
   checkMediaMatches();
   window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', handleResize);
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
+  window.removeEventListener('orientationchange', handleResize);
 });
 </script>
 

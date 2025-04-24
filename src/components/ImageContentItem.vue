@@ -1,5 +1,5 @@
 <template>
-    <div :class="image.className">
+    <div :class="image.className" :id="image.name" >
         <img :src="image.src"  mode="widthFix" />
     </div>
 </template>
