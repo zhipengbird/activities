@@ -31,6 +31,19 @@ const detectH5 = (): boolean => {
   return !detectWechat() && !detectApp();
 };
 
+// iPad检测（更精确）
+const detectIPad = (): boolean => {
+  // 传统的iPad检测
+  const isIpad = /iPad/i.test(navigator.userAgent);
+  
+  // 新版iPad Pro/Air在iOS 13+上伪装成Mac
+  const isMacButHasTouchScreen = 
+    /Macintosh/i.test(navigator.userAgent) && 
+    navigator.maxTouchPoints > 1;
+  
+  return isIpad || isMacButHasTouchScreen;
+};
+
 // 环境变量
 export const ENV = {
   // 设备类型
@@ -38,6 +51,7 @@ export const ENV = {
   isIOS: detectIOS(),
   isAndroid: detectAndroid(),
   isTouchDevice: detectTouchDevice(),
+  isIPad: detectIPad(),  // 添加iPad标志
   
   // 运行环境
   isWechat: detectWechat(),
@@ -56,6 +70,31 @@ export const ENV = {
 window.addEventListener('resize', () => {
   ENV.viewportWidth = window.innerWidth;
   ENV.viewportHeight = window.innerHeight;
+
+  console.log('当前窗口宽度:', ENV.viewportWidth);
+  console.log('是否为iPad:', ENV.isIPad);
+  
+  // 检测命中了哪个断点
+  if (ENV.viewportWidth <= 320) console.log('命中断点: xs');
+  else if (ENV.viewportWidth  <= 360) console.log('命中断点: sm');
+  else if (ENV.viewportWidth  <= 393) console.log('命中断点: md');
+  else if (ENV.viewportWidth  <= 414) console.log('命中断点: lg');
+  else if (ENV.viewportWidth  <= 768) console.log('命中断点: tablet');
+  else if (ENV.viewportWidth  <= 1024) console.log('命中断点: desktop');
+  else console.log('命中断点: wide');
+  
+  // 输出设备信息以便调试
+  console.log('设备信息:', {
+    userAgent: navigator.userAgent,
+    touchPoints: navigator.maxTouchPoints,
+    deviceMemory: (navigator as any).deviceMemory,
+    devicePixelRatio: window.devicePixelRatio
+  });
 });
+
+// 初始化时也输出一次日志
+console.log('初始化视口宽度:', ENV.viewportWidth);
+console.log('是否为iPad:', ENV.isIPad);
+console.log('设备UserAgent:', navigator.userAgent);
 
 export default ENV; 

@@ -10,9 +10,16 @@ $base-font-size: 16px;
 $breakpoints: (
   'xs': 320px,
   'sm': 360px,
+  'iphone-375': 375px,  // iPhone X, 8, SE (2nd gen)等
+  'iphone-390': 390px,  // iPhone 12, 13, 14系列
   'md': 393px,
   'lg': 414px,
   'tablet': 768px,
+  'ipad-mini': 768px,    // iPad Mini 宽度
+  'ipad': 810px,         // 标准iPad 宽度 (第7代及以上)
+  'ipad-air': 834px,     // iPad Air 宽度
+  'ipad-pro-11': 834px,  // iPad Pro 11寸 宽度
+  'ipad-pro-12': 1024px, // iPad Pro 12.9寸 宽度
   'desktop': 1024px,
   'wide': 1920px,
 );
@@ -41,11 +48,11 @@ $breakpoints: (
 // 响应式媒体查询
 @mixin respond-to($breakpoint) {
   @if map.has-key($breakpoints, $breakpoint) {
-    @media screen and (max-width: map.get($breakpoints, $breakpoint)) {
-      @content;
+      @media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+        @content;
+      }
     }
   }
-}
 
 @mixin respond-from($breakpoint) {
   @if map.has-key($breakpoints, $breakpoint) {
@@ -60,6 +67,56 @@ $breakpoints: (
     @media screen and (min-width: map.get($breakpoints, $min)) and (max-width: map.get($breakpoints, $max)) {
       @content;
     }
+  }
+}
+
+// iPad 特定媒体查询
+// 标准iPad (第7代及更新的iPad, 10.2寸)
+@mixin ipad-standard {
+  @media screen and (min-width: 810px) and (max-width: 820px) {
+    @content;
+  }
+}
+
+// iPad Mini
+@mixin ipad-mini {
+  @media screen and (min-width: 768px) and (max-width: 800px) {
+    @content;
+  }
+}
+
+// iPad Air/Pro 10.5/11寸系列
+@mixin ipad-air {
+  @media screen and (min-width: 834px) and (max-width: 840px) {
+    @content;
+  }
+}
+
+// iPad Pro 12.9寸
+@mixin ipad-pro-12 {
+  @media screen and (min-width: 1024px) and (max-width: 1366px) {
+    @content;
+  }
+}
+
+// 所有iPad设备通用
+@mixin ipad-all {
+  @media screen and (min-width: 768px) and (max-width: 1366px) {
+    @content;
+  }
+}
+
+// iPad设备横屏
+@mixin ipad-landscape {
+  @media screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    @content;
+  }
+}
+
+// iPad设备竖屏
+@mixin ipad-portrait {
+  @media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    @content;
   }
 }
 
@@ -139,30 +196,78 @@ $breakpoints: (
     -moz-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    
+    // 通用设备断点，从大到小排列
     @include respond-to('wide') {
-      font-size: calc(#{$base-font-size} * 0.95);
+      font-size: calc(#{$base-font-size} * 1.5) !important;
     }
     @include respond-to('desktop') {
-      font-size: calc(#{$base-font-size} * 0.9);
+      font-size: calc(#{$base-font-size} * 1.6) !important;
     }
     @include respond-to('tablet') {
-      font-size: calc(#{$base-font-size} * 0.85);
+      font-size: calc(#{$base-font-size} * 1.14) !important;
     }
     @include respond-to('lg') {
-      font-size: calc(#{$base-font-size} * 0.8);
+      font-size: calc(#{$base-font-size} * 1.1) !important; 
     }
     @include respond-to('md') {
-      font-size: calc(#{$base-font-size} * 0.75);
+      font-size: calc(#{$base-font-size} * 1) !important;
     }
     @include respond-to('sm') {
-      font-size: calc(#{$base-font-size} * 0.7);
+      font-size: calc(#{$base-font-size} * 0.95) !important;
     }
     @include respond-to('xs') {
-      font-size: calc(#{$base-font-size} * 0.65);
+      font-size: calc(#{$base-font-size} * 1.2) !important;
     }
+    
+    // 特定设备优先级更高，放在后面
+    // iPad特定字体大小调整
+    // iPad Mini
+    @include ipad-mini {
+      font-size: calc(#{$base-font-size} * 2.03) !important;
+    }
+    
+    // 标准iPad
+    @include ipad-standard {
+      font-size: calc(#{$base-font-size} * 3.1) !important;
+    }
+    
+    // iPad Air/Pro 11寸
+    @include ipad-air {
+      font-size: calc(#{$base-font-size} * 2) !important;
+    }
+    
+    // iPad Pro 12.9寸
+    @include ipad-pro-12 {
+      font-size: calc(#{$base-font-size} * 3.6) !important;
+    }
+    
+    // iPhone特定字体大小调整
+    @include iphone-375 {
+      font-size: calc(#{$base-font-size} * 1) !important;
+    }
+    
+    @include iphone-390 {
+      font-size: calc(#{$base-font-size} * 1.03) !important;
+    }
+    
+    // DPR适配放在最后
     @include device-pixel-ratio(2) {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+  }
+}
+
+// iPhone 特定媒体查询
+@mixin iphone-375 {
+  @media screen and (min-width: 375px) and (max-width: 389px) {
+    @content;
+  }
+}
+
+@mixin iphone-390 {
+  @media screen and (min-width: 390px) and (max-width: 392px) and (max-device-width: 480px) {
+    @content;
   }
 }
