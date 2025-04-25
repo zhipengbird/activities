@@ -24,7 +24,7 @@
                 :key="index"
                 draggable="false"
                 :src="img"
-                alt="" mode="aspectFill"
+                alt=""
                 :style="{ height: ENV.isMobile ? '100vw' : '100vh' }"
                 @load="onImageLoad(index)"
                 loading="eager"
@@ -267,12 +267,17 @@ defineExpose({
           pointer-events: none;
           display: flex;
           flex-direction: row;
+          background-color: transparent;
           
           img {
             display: block;
             flex-shrink: 0; // 防止图片被压缩
             
             object-fit: cover; // 保持图片比例
+          }
+          
+          img:not(:first-child) {
+            margin-left: -1px;
           }
         }
 
