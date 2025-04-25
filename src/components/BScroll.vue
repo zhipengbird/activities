@@ -46,7 +46,7 @@
 import { ref, nextTick, onMounted, onUnmounted, defineExpose } from 'vue';
 import BScroll from 'better-scroll';
 import { ENV } from '@/utils/env';
-import { type BackgroundImageItem } from '@/data/data';
+import { type BackgroundImageItem } from '@/data/types';
 
 let bs: InstanceType<typeof BScroll>;
 const scrollRef = ref();
