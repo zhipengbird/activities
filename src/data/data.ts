@@ -1,4 +1,3 @@
-
 import bg01 from '@/assets/images/jiujiang/bg/bg_01.jpg';
 import bg02 from '@/assets/images/jiujiang/bg/bg_02.jpg';
 import bg03 from '@/assets/images/jiujiang/bg/bg_03.jpg';
@@ -7,8 +6,22 @@ import bg05 from '@/assets/images/jiujiang/bg/bg_05.jpg';
 import bg06 from '@/assets/images/jiujiang/bg/bg_06.jpg';
 import bg07 from '@/assets/images/jiujiang/bg/bg_07.jpg';
 
-export const bgImages = [
-    bg01, bg02, bg03, bg04, bg05, bg06, bg07
+// 定义背景图片项接口，与BScroll.vue中的定义保持一致
+export interface BackgroundImageItem {
+  url: string;
+  opacity?: number;
+  parallaxFactor?: number;
+  zIndex?: number;
+}
+
+export const bgImages: BackgroundImageItem[] = [
+    { url: bg01, opacity: 1 },
+    { url: bg02, opacity: 1 },
+    { url: bg03, opacity: 1 },
+    { url: bg04, opacity: 1 },
+    { url: bg05, opacity: 1 },
+    { url: bg06, opacity: 1 },
+    { url: bg07, opacity: 1 }
 ];
 
 

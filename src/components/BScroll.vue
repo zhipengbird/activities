@@ -23,7 +23,7 @@
                 v-for="(img, index) in backgroundImages"
                 :key="index"
                 draggable="false"
-                :src="img"
+                :src="img.url"
                 alt=""
                 :style="{ height: ENV.isMobile ? '100vw' : '100vh' }"
                 @load="onImageLoad(index)"
@@ -46,6 +46,7 @@
 import { ref, nextTick, onMounted, onUnmounted, defineExpose } from 'vue';
 import BScroll from 'better-scroll';
 import { ENV } from '@/utils/env';
+import { type BackgroundImageItem } from '@/data/data';
 
 let bs: InstanceType<typeof BScroll>;
 const scrollRef = ref();
@@ -60,7 +61,7 @@ const props = defineProps({
     default: '',
   },
   backgroundImages: {
-    type: Array<string>,
+    type: Array as () => BackgroundImageItem[],
     default: () => [],
   },
 });
