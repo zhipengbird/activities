@@ -5,13 +5,7 @@
         class="image-content" 
         :class="baseAndAnimationClasses"
     >
-        <!-- 添加一个包装器，用于浮动动画 -->
-        <div 
-            class="floating-wrapper"
-            :class="{'enable-float': isVisible && animationCompleted}"
-        >
-            <img :src="image.src" mode="widthFix" />
-        </div>
+        <img :src="image.src" mode="widthFix" class="image" :class="floatingClass" />
     </div>
 </template>
 
@@ -28,41 +22,60 @@ const isVisible = ref(false);
 const animationCompleted = ref(false);
 let observer: IntersectionObserver | null = null;
 
+// 计算浮动类名
+const floatingClass = computed(() => {
+    // 只在入场动画完成后启用浮动
+    if (!isVisible.value || !animationCompleted.value) {
+        return {};
+    }
+    
+    // 根据图片ID决定浮动类型
+    const lastDigit = props.image.name.charAt(props.image.name.length - 1);
+    const floatType = ['0', '3', '6', '9'].includes(lastDigit) 
+        ? 'float-up-down' 
+        : ['1', '4', '7'].includes(lastDigit) 
+            ? 'float-left-right' 
+            : 'float-scale';
+    
+    // 延迟基于图片ID
+    const delayIndex = parseInt(lastDigit) || 0;
+    
+    return {
+        [floatType]: true,
+        [`delay-${delayIndex}`]: true
+    };
+});
+
 // 计算基础类和动画类
 const baseAndAnimationClasses = computed(() => {
     // 获取基础类名（非动画类）
     const baseClasses = props.image.className.filter(cls => !cls.startsWith('animate__'));
     
-    // 如果元素可见，添加animate__animated和所有动画类
+    // 如果元素可见，添加动画类
     if (isVisible.value) {
+        // 所有动画类
         const animationClasses = props.image.className.filter(cls => cls.startsWith('animate__'));
-        return [...baseClasses, 'animate__animated', ...animationClasses];
+        
+        // 分离持续性动画（如pulse）和入场动画
+        const continousAnimations = animationClasses.filter(cls => 
+            cls.includes('pulse') || cls.includes('bounce') || cls.includes('flash'));
+        const entranceAnimations = animationClasses.filter(cls => 
+            !continousAnimations.includes(cls));
+        
+        // 如果完成了入场动画，不再应用持续性动画
+        const finalAnimations = animationCompleted.value 
+            ? entranceAnimations 
+            : animationClasses;
+            
+        return [...baseClasses, 'animate__animated', ...finalAnimations];
     }
     
     // 如果不可见，只返回基础类
     return baseClasses;
 });
 
-// 获取浮动动画类型
-const getFloatType = (name: string) => {
-    const lastDigit = name.charAt(name.length - 1);
-    if (['0', '3', '6', '9'].includes(lastDigit)) {
-        return 'float-up-down';
-    } else if (['1', '4', '7'].includes(lastDigit)) {
-        return 'float-left-right';
-    } else {
-        return 'float-scale';
-    }
-};
-
-// 获取延迟值
-const getAnimationDelay = (name: string) => {
-    const lastDigit = name.charAt(name.length - 1);
-    return (parseInt(lastDigit) || 0) * 0.3;
-};
-
 onMounted(() => {
-    // 预先加载图片，减少闪烁
+    // 预先加载图片
     const preloadImage = new Image();
     preloadImage.src = props.image.src;
     
@@ -73,47 +86,32 @@ onMounted(() => {
                 // 元素进入视口
                 isVisible.value = true;
                 
-                // 等待入场动画完成后再开始浮动效果
-                const animationClass = props.image.className.find(cls => cls.startsWith('animate__'));
+                // 计算适当的等待时间
+                const hasSlow = props.image.className.some(cls => cls.includes('slow'));
+                const hasComplex = props.image.className.some(cls => 
+                    cls.includes('jackInTheBox') || cls.includes('lightSpeed'));
                 
-                // 根据动画类型确定延迟时间
-                let animationDuration = 1500; // 默认1.5秒
+                // 根据动画类型决定等待时间
+                const waitTime = hasSlow 
+                    ? 2200 
+                    : hasComplex 
+                        ? 2000 
+                        : 1600;
                 
-                // 对于特定的动画，可能需要更长的时间
-                if (animationClass?.includes('slow')) {
-                    animationDuration = 2000; // 慢速动画等待2秒
-                } else if (animationClass?.includes('jackInTheBox')) {
-                    animationDuration = 2000; // 某些复杂动画需要等待更长时间
-                }
-                
+                // 等待入场动画完成后启用浮动
                 setTimeout(() => {
-                    // 标记动画完成，启用浮动效果
                     animationCompleted.value = true;
-                    
-                    // 应用浮动动画的类型和延迟
-                    if (imageRef.value) {
-                        const floatWrapper = imageRef.value.querySelector('.floating-wrapper');
-                        if (floatWrapper) {
-                            // 设置浮动类型
-                            floatWrapper.classList.add(getFloatType(props.image.name));
-                            
-                            // 设置延迟
-                            const delay = getAnimationDelay(props.image.name);
-                            (floatWrapper as HTMLElement).style.animationDelay = `${delay}s`;
-                        }
-                    }
                     
                     // 停止观察
                     if (observer && imageRef.value) {
                         observer.unobserve(imageRef.value);
                     }
-                }, animationDuration);
+                }, waitTime);
             }
         });
     }, {
-        // 配置选项
-        threshold: 0.1, // 当10%的元素可见时触发，提前开始动画准备
-        rootMargin: '0px 0px 100px 0px' // 提前100px触发，给动画预留更多准备时间
+        threshold: 0.1,
+        rootMargin: '0px 0px 100px 0px'
     });
 
     // 开始观察
@@ -164,51 +162,38 @@ onUnmounted(() => {
 
 .image-content {
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 0.6s ease;
     z-index: 2;
     position: relative;
-    backface-visibility: hidden; /* 减少闪烁 */
-    -webkit-backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    perspective: 1000;
     
     // 当添加了动画类时，恢复完全不透明
     &.animate__animated {
         opacity: 1;
     }
     
-    // 浮动包装器
-    .floating-wrapper {
-        position: relative;
-        display: inline-block; // 使其尺寸适应内容
-        backface-visibility: hidden; /* 减少闪烁 */
-        -webkit-backface-visibility: hidden;
-        transform: translateZ(0); /* 强制启用GPU加速 */
-        -webkit-transform: translateZ(0);
-        
-        &.enable-float {
-            will-change: transform;
-            animation-play-state: running;
-            
-            &.float-up-down {
-                animation: float-up-down 5s ease-in-out infinite;
-            }
-            
-            &.float-left-right {
-                animation: float-left-right 6s ease-in-out infinite;
-            }
-            
-            &.float-scale {
-                animation: float-scale 7s ease-in-out infinite;
-            }
-        }
-    }
-    
-    img {
+    .image {
         display: block;
         transform-origin: center;
-        backface-visibility: hidden; /* 减少闪烁 */
-        -webkit-backface-visibility: hidden;
+        
+        // 浮动动画类
+        &.float-up-down {
+            animation: float-up-down 5s ease-in-out infinite;
+        }
+        
+        &.float-left-right {
+            animation: float-left-right 6s ease-in-out infinite;
+        }
+        
+        &.float-scale {
+            animation: float-scale 7s ease-in-out infinite;
+        }
+        
+        // 延迟类
+        @for $i from 0 through 9 {
+            &.delay-#{$i} {
+                animation-delay: #{$i * 0.3}s;
+            }
+        }
     }
 }
 </style>
