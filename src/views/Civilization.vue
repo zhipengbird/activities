@@ -42,6 +42,14 @@
       </div>
     </div>
     
+    <!-- 背景音乐组件 -->
+    <AudioControl
+      ref="audioRef"
+      :audioUrl="bgMusicUrl"
+      :autoPlay="true"
+      class="music-control"
+    />
+    
     <!-- 引入独立的调试组件 -->
     <!-- <DebugPanel /> -->
     
@@ -63,12 +71,18 @@ import { ref, onMounted, computed, onUnmounted, watch } from "vue";
 import { bgImages } from "@/data/data";
 import { type ImageItem, imageList } from "@/data/data";
 import ImageContentItem from "@components/ImageContentItem.vue";
-import DebugPanel from "@/components/DebugPanel.vue";
+// import DebugPanel from "@/components/DebugPanel.vue";
 import WxShare from "@/components/WxShare.vue";
+import AudioControl from "@/components/AudioControl.vue";
+import bgmusic from "@/assets/bgmusic.mp3";
 
 const scrollRef = ref<InstanceType<typeof BScroll>>();
 const wxShareRef = ref<InstanceType<typeof WxShare>>();
+const audioRef = ref<InstanceType<typeof AudioControl>>();
 const bsInstance = ref<InstanceType<typeof BetterScroll>>();
+
+// 背景音乐URL
+const bgMusicUrl = ref(bgmusic); // 请确保路径正确
 
 // 自动滚动相关状态
 const isUserScrolling = ref(false);
@@ -424,5 +438,13 @@ defineExpose({
       }
     }
   }
+}
+
+// 背景音乐控制按钮样式
+.music-control {
+  position: fixed;
+  top: rem(20);
+  right: rem(20);
+  z-index: 1000;
 }
 </style>
