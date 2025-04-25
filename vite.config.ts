@@ -103,19 +103,14 @@ export default defineConfig(({ mode }) => {
         output: {
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
-          assetFileNames: (info) => {
-            if (!info.name) return 'assets/[name]-[hash].[ext]';
-            
-            const extPart = info.name.split('.').pop();
-            const extType = extPart ? extPart.toLowerCase() : '';
-            
-            if (['mp3', 'wav', 'ogg', 'm4a', 'flac'].includes(extType)) {
+          assetFileNames: (info: any) => {
+            if (/\.(mp3|wav|ogg|m4a|flac)$/i.test(info.name)) {
               return 'audio/[name]-[hash].[ext]';
             }
-            if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif'].includes(extType)) {
+            if (/\.(png|jpe?g|gif|svg|webp|avif)$/i.test(info.name)) {
               return 'images/[name]-[hash].[ext]';
             }
-            if (['woff', 'woff2', 'eot', 'ttf', 'otf'].includes(extType)) {
+            if (/\.(woff2?|eot|ttf|otf)$/i.test(info.name)) {
               return 'fonts/[name]-[hash].[ext]';
             }
             
