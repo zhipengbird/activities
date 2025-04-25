@@ -103,7 +103,25 @@ export default defineConfig(({ mode }) => {
         output: {
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
-          assetFileNames: '[ext]/[name]-[hash].[ext]',
+          assetFileNames: (assetInfo) => {
+            // 根据文件扩展名分类
+            if (assetInfo.name) {
+              // 处理音频文件
+              if (/\.(mp3|wav|ogg|m4a|flac)$/i.test(assetInfo.name)) {
+                return 'audio/[name]-[hash].[ext]';
+              }
+              // 处理图片文件
+              if (/\.(png|jpe?g|gif|svg|webp|avif)$/i.test(assetInfo.name)) {
+                return 'images/[name]-[hash].[ext]';
+              }
+              // 处理字体文件
+              if (/\.(woff2?|eot|ttf|otf)$/i.test(assetInfo.name)) {
+                return 'fonts/[name]-[hash].[ext]';
+              }
+            }
+            // 其他资源
+            return 'assets/[name]-[hash].[ext]';
+          },
           manualChunks: {
             vue: ['vue', 'vue-router', 'pinia'],
             // 将第三方库分开打包
