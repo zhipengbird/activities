@@ -35,7 +35,7 @@
     >
       <div class="hint-text">{{ hintText }}</div>
       <div class="hint-arrow">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M14 5L21 12L14 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M3 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -406,7 +406,7 @@ defineExpose({
   }
   
   .hint-text {
-    font-size: rem(14);
+    font-size: rem(16);
     margin-right: rem(8);
   }
   
@@ -414,6 +414,11 @@ defineExpose({
     animation: swipe-right 1.5s infinite;
     display: flex;
     align-items: center;
+    
+    svg {
+      width: rem(24);
+      height: rem(24);
+    }
   }
   
   @keyframes swipe-right {
@@ -435,6 +440,11 @@ defineExpose({
     &:not(.landscape-hint) {
       .hint-text {
         font-size: rem(12);
+      }
+      
+      .hint-arrow svg {
+        width: rem(18);
+        height: rem(18);
       }
     }
   }
