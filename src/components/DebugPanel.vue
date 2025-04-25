@@ -10,6 +10,16 @@
         <p>UserAgent: {{ userAgent }}</p>
         <div class="media-matches">
           <p>媒体查询匹配:</p>
+          
+          <div class="section-title">通用断点:</div>
+          <p :class="{ 'matched': mediaMatches.xs }">XS (≤320px): {{ mediaMatches.xs ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.sm }">SM (≤360px): {{ mediaMatches.sm ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.md }">MD (≤393px): {{ mediaMatches.md ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.lg }">LG (≤414px): {{ mediaMatches.lg ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.tablet }">Tablet (≤768px): {{ mediaMatches.tablet ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.desktop }">Desktop (≤1024px): {{ mediaMatches.desktop ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.wide }">Wide (≤1920px): {{ mediaMatches.wide ? '✓' : '✗' }}</p>
+          
           <div class="section-title">iPhone:</div>
           <p :class="{ 'matched': mediaMatches.iphone375 }">iPhone 375px: {{ mediaMatches.iphone375 ? '✓' : '✗' }}</p>
           <p :class="{ 'matched': mediaMatches.iphone390 }">iPhone 390px: {{ mediaMatches.iphone390 ? '✓' : '✗' }}</p>
@@ -19,9 +29,16 @@
           <p :class="{ 'matched': mediaMatches.ipadMini }">iPad Mini: {{ mediaMatches.ipadMini ? '✓' : '✗' }}</p>
           <p :class="{ 'matched': mediaMatches.ipadStandard }">标准iPad: {{ mediaMatches.ipadStandard ? '✓' : '✗' }}</p>
           <p :class="{ 'matched': mediaMatches.ipadAir }">iPad Air: {{ mediaMatches.ipadAir ? '✓' : '✗' }}</p>
-          <p :class="{ 'matched': mediaMatches.ipadPro12 }">iPad Pro 12.9: {{ mediaMatches.ipadPro12 ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.ipadPro11 }">iPad Pro 11": {{ mediaMatches.ipadPro11 ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.ipadPro12 }">iPad Pro 12.9": {{ mediaMatches.ipadPro12 ? '✓' : '✗' }}</p>
           <p :class="{ 'matched': mediaMatches.ipadPortrait }">iPad 竖屏: {{ mediaMatches.ipadPortrait ? '✓' : '✗' }}</p>
           <p :class="{ 'matched': mediaMatches.ipadLandscape }">iPad 横屏: {{ mediaMatches.ipadLandscape ? '✓' : '✗' }}</p>
+          
+          <div class="section-title">方向与DPR:</div>
+          <p :class="{ 'matched': mediaMatches.portrait }">竖屏: {{ mediaMatches.portrait ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.landscape }">横屏: {{ mediaMatches.landscape ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.dpr2 }">DPR ≥ 2: {{ mediaMatches.dpr2 ? '✓' : '✗' }}</p>
+          <p :class="{ 'matched': mediaMatches.dpr3 }">DPR ≥ 3: {{ mediaMatches.dpr3 ? '✓' : '✗' }}</p>
         </div>
       </div>
       <button @click="showDebug = false">关闭</button>
@@ -38,15 +55,34 @@ import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
 
 const showDebug = ref(false);
 const mediaMatches = reactive({
+  // 通用断点
+  xs: false,
+  sm: false,
+  md: false,
+  lg: false,
+  tablet: false,
+  desktop: false,
+  wide: false,
+  
+  // iPhone断点
   iphone375: false,
   iphone390: false,
+  
+  // iPad断点
   ipadAll: false,
   ipadMini: false,
   ipadStandard: false,
   ipadAir: false,
+  ipadPro11: false,
   ipadPro12: false,
   ipadPortrait: false,
-  ipadLandscape: false
+  ipadLandscape: false,
+  
+  // 方向与DPR
+  portrait: false,
+  landscape: false,
+  dpr2: false,
+  dpr3: false
 });
 
 // 全局变量
@@ -78,7 +114,7 @@ const indicatorStyle = computed(() => {
   } else if (width <= 1024) {
     backgroundColor = 'indigo'; // desktop
   } else {
-    backgroundColor = 'violet'; // wide
+    backgroundColor = 'black'; // wide
   }
   
   // 在iPad设备上增加指示器大小
@@ -96,6 +132,15 @@ const indicatorStyle = computed(() => {
 
 // 检查媒体查询匹配状态
 const checkMediaMatches = () => {
+  // 通用断点 - 使用responsive.scss中定义的断点
+  mediaMatches.xs = window.matchMedia('screen and (max-width: 320px)').matches;
+  mediaMatches.sm = window.matchMedia('screen and (max-width: 360px)').matches;
+  mediaMatches.md = window.matchMedia('screen and (max-width: 393px)').matches;
+  mediaMatches.lg = window.matchMedia('screen and (max-width: 414px)').matches;
+  mediaMatches.tablet = window.matchMedia('screen and (max-width: 768px)').matches;
+  mediaMatches.desktop = window.matchMedia('screen and (max-width: 1024px)').matches;
+  mediaMatches.wide = window.matchMedia('screen and (max-width: 1920px)').matches;
+  
   // iPhone断点
   mediaMatches.iphone375 = window.matchMedia('screen and (min-width: 375px) and (max-width: 389px)').matches;
   mediaMatches.iphone390 = window.matchMedia('screen and (min-width: 390px) and (max-width: 392px)').matches;
@@ -105,9 +150,16 @@ const checkMediaMatches = () => {
   mediaMatches.ipadMini = window.matchMedia('screen and (min-width: 768px) and (max-width: 800px)').matches;
   mediaMatches.ipadStandard = window.matchMedia('screen and (min-width: 810px) and (max-width: 820px)').matches;
   mediaMatches.ipadAir = window.matchMedia('screen and (min-width: 834px) and (max-width: 840px)').matches;
+  mediaMatches.ipadPro11 = window.matchMedia('screen and (min-width: 834px) and (max-width: 840px)').matches;
   mediaMatches.ipadPro12 = window.matchMedia('screen and (min-width: 1024px) and (max-width: 1366px)').matches;
   mediaMatches.ipadPortrait = window.matchMedia('screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait)').matches;
   mediaMatches.ipadLandscape = window.matchMedia('screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape)').matches;
+  
+  // 方向与DPR
+  mediaMatches.portrait = window.matchMedia('(orientation: portrait)').matches;
+  mediaMatches.landscape = window.matchMedia('(orientation: landscape)').matches;
+  mediaMatches.dpr2 = window.matchMedia('(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx)').matches;
+  mediaMatches.dpr3 = window.matchMedia('(-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi), (min-resolution: 3dppx)').matches;
   
   console.log('媒体查询匹配状态:', mediaMatches);
 };

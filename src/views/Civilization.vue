@@ -16,7 +16,11 @@
           :key="index"
           :image="image"
         />
+        <div class="path-content">
+          <img src="@/assets/images/jiujiang/path.png" alt="path" />
+        </div>
       </div>
+
     </BScroll>
     
     <!-- 引入独立的调试组件 -->
@@ -70,5 +74,19 @@ const handleScroll = (pos: { x: number; y: number }) => {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+
+  .path-content {
+    position: absolute;
+    bottom: rem(20);
+    left: rem(2120);
+    width:auto;
+    height: rem(307);
+    img {
+      width: 100%;
+      height: 100%;
+      // object-fit: cover;
+    }
+    z-index: 0;
+  }
 }
 </style>

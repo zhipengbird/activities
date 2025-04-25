@@ -71,6 +71,7 @@ onUnmounted(() => {
 .image-content {
     opacity: 0.01;
     transition: opacity 0.3s ease;
+    z-index: 2;
     
     // 当添加了动画类时，恢复完全不透明
     &.animate__animated {

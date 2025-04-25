@@ -22,6 +22,8 @@ $breakpoints: (
   'ipad-pro-12': 1024px, // iPad Pro 12.9寸 宽度
   'desktop': 1024px,
   'wide': 1920px,
+  '2k': 2560px,          // 2K分辨率 (1440p)
+  '4k': 3840px,          // 4K分辨率 (2160p)
 );
 
 // vw 函数 - 基于设计稿宽度
@@ -120,6 +122,25 @@ $breakpoints: (
   }
 }
 
+// 新增各型号iPad横屏专用混合器
+@mixin ipad-mini-landscape {
+  @media screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin ipad-standard-landscape {
+  @media screen and (min-width: 1080px) and (max-width: 1180px) and (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin ipad-air-landscape {
+  @media screen and (min-width: 1180px) and (max-width: 1366px) and (orientation: landscape) {
+    @content;
+  }
+}
+
 // DPR 适配
 @mixin device-pixel-ratio($dpr: 2) {
   @media screen and (-webkit-min-device-pixel-ratio: $dpr),
@@ -199,8 +220,9 @@ $breakpoints: (
     
     // 通用设备断点，从大到小排列
     @include respond-to('wide') {
-      font-size: calc(#{$base-font-size} * 1.5) !important;
+      font-size: calc(#{$base-font-size} * 2.3) !important;
     }
+
     @include respond-to('desktop') {
       font-size: calc(#{$base-font-size} * 3.4) !important;
     }
@@ -242,6 +264,24 @@ $breakpoints: (
       font-size: calc(#{$base-font-size} * 3.6) !important;
     }
     
+    // iPad横屏适配
+    @include ipad-landscape {
+      font-size: calc(#{$base-font-size} * 1) !important;
+    }
+    
+    // 各型号iPad横屏专用适配
+    @include ipad-mini-landscape {
+      font-size: calc(#{$base-font-size} * 1.5) !important;
+    }
+    
+    @include ipad-standard-landscape {
+      font-size: calc(#{$base-font-size} * 1.65) !important;
+    }
+    
+    @include ipad-air-landscape {
+      font-size: calc(#{$base-font-size} * 2.42) !important;
+    }
+    
     // iPhone特定字体大小调整
     @include iphone-375 {
       font-size: calc(#{$base-font-size} * 1) !important;
@@ -249,6 +289,24 @@ $breakpoints: (
     
     @include iphone-390 {
       font-size: calc(#{$base-font-size} * 1.03) !important;
+    }
+    
+
+    // 超宽屏断点
+    @include respond-from('wide') {
+      @media screen and (max-width: 2560px) {
+        font-size: calc(#{$base-font-size} * 3) !important;
+      }
+    }
+    
+    @include respond-from('2k') {
+      @media screen and (max-width: 3840px) {
+        font-size: calc(#{$base-font-size} * 3.9) !important;
+      }
+    }
+    
+    @include respond-from('4k') {
+      font-size: calc(#{$base-font-size} * 4) !important;
     }
     
     // DPR适配放在最后
@@ -268,6 +326,25 @@ $breakpoints: (
 
 @mixin iphone-390 {
   @media screen and (min-width: 390px) and (max-width: 392px) and (max-device-width: 480px) {
+    @content;
+  }
+}
+
+// 添加更多屏幕宽度的媒体查询
+@mixin respond-2k {
+  @media screen and (min-width: 1921px) and (max-width: 2560px) {
+    @content;
+  }
+}
+
+@mixin respond-4k {
+  @media screen and (min-width: 2561px) and (max-width: 3840px) {
+    @content;
+  }
+}
+
+@mixin respond-super-wide {
+  @media screen and (min-width: 3841px) {
     @content;
   }
 }
