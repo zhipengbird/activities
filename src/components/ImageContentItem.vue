@@ -38,15 +38,18 @@ onMounted(() => {
             if (entry.isIntersecting) {
                 // 元素进入视口
                 isVisible.value = true;
-                // 一旦可见，可以停止观察
-                if (observer && imageRef.value) {
-                    observer.unobserve(imageRef.value);
-                }
+                
+                // 一旦可见，延迟一段时间再停止观察，允许动画完成
+                setTimeout(() => {
+                    if (observer && imageRef.value) {
+                        observer.unobserve(imageRef.value);
+                    }
+                }, 1000); // 等待1秒，让动画有足够时间启动
             }
         });
     }, {
         // 配置选项
-        threshold: 0.3, // 当20%的元素可见时触发
+        threshold: 0.3, // 当30%的元素可见时触发
         rootMargin: '0px 0px 50px 0px' // 提前50px触发
     });
 
@@ -69,13 +72,19 @@ onUnmounted(() => {
 @use '@/data/style.scss';
 
 .image-content {
-    opacity: 0.01;
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.4s ease;
     z-index: 2;
+    will-change: opacity, transform;
     
     // 当添加了动画类时，恢复完全不透明
     &.animate__animated {
         opacity: 1;
+    }
+    
+    img {
+        transform-origin: center;
+        will-change: transform;
     }
 }
 </style>
