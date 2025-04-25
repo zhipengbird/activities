@@ -1,33 +1,112 @@
-# Activities
+# 九江山水·星河文明 项目
 
-This template should help get you started developing with Vue 3 in Vite.
+一个展示九江山水与文明的交互式Web长卷应用。
 
-## Recommended IDE Setup
+## 项目简介
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+本项目是一个基于Vue 3和TypeScript构建的横向滚动长卷应用，用于展示九江的山水、文化和文明演进。通过精美图片、动画效果和互动元素，为用户提供沉浸式的视觉体验。
 
-## Type Support for `.vue` Imports in TS
+## 技术栈
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **框架**: Vue 3 + TypeScript
+- **构建工具**: Vite
+- **滚动库**: BetterScroll
+- **动画**: Animate.css
+- **状态管理**: Pinia
+- **其他**: 微信分享功能、图片优化
 
-## Customize configuration
+## 主要功能
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **横向滚动长卷**: 通过BetterScroll实现流畅的横向滚动体验
+- **动画效果**: 基于Animate.css和Vue的元素出现动画
+- **响应式设计**: 自适应不同尺寸的设备和屏幕方向
+- **微信分享**: 支持微信环境中的分享功能
+- **图片优化**: 自动压缩和优化图片资源
 
-## Project Setup
+## 项目结构
 
-```sh
+```
+Activities/
+├── public/                 # 静态资源
+│   └── assets/             # 资源文件
+│       └── images/         # 图片资源
+├── src/                    # 源代码
+│   ├── assets/             # 项目资源
+│   ├── components/         # 通用组件
+│   │   ├── BScroll.vue     # 滚动组件
+│   │   ├── ImageContentItem.vue   # 图片内容组件
+│   │   └── WxShare.vue     # 微信分享组件
+│   ├── data/               # 数据文件
+│   │   └── data.ts         # 图片和背景数据
+│   ├── utils/              # 工具函数
+│   │   ├── env.ts          # 环境检测
+│   │   └── wxShare.ts      # 微信分享工具
+│   ├── views/              # 页面视图
+│   │   └── Civilization.vue # 主视图
+│   ├── App.vue             # 应用入口组件
+│   └── main.ts             # 主入口文件
+├── vite.config.ts          # Vite配置
+├── README.md               # 项目说明文档
+└── README-WXSHARE.md       # 微信分享功能说明
+```
+
+## 安装与运行
+
+### 安装依赖
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发环境运行
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### 构建项目
 
-```sh
+```bash
 npm run build
 ```
+
+构建后的文件将生成在 `Civilization` 目录中。
+
+## 自定义配置
+
+### 图片资源
+
+- 背景图片: 在 `src/data/data.ts` 中的 `bgImages` 数组中配置
+- 内容图片: 在 `src/data/data.ts` 中的 `imageList` 数组中配置
+
+### 微信分享
+
+微信分享功能的配置详见 [README-WXSHARE.md](./README-WXSHARE.md)
+
+## 设备兼容性
+
+- 支持现代浏览器和移动设备
+- 针对iOS和Android设备进行了特别优化
+- 支持在微信环境中打开
+
+## 性能优化
+
+- 使用图片懒加载提高加载速度
+- 通过 `will-change` 属性优化动画性能
+- 图片资源自动压缩减小体积（约60%的压缩率）
+
+## 注意事项
+
+1. 项目需要在HTTP服务器环境下运行，不支持直接打开HTML文件
+2. 微信分享功能需要后端提供签名接口
+3. 在移动设备上测试时，建议使用真机而非模拟器
+
+## 团队
+
+- 开发团队: [您的团队名称]
+- 设计团队: [设计团队名称]
+- 内容团队: [内容团队名称]
+
+## 版权信息
+
+© 2023 [您的公司/组织名称] 版权所有

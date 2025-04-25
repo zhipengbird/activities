@@ -93,8 +93,8 @@ export default defineConfig(({ mode }) => {
     },
     // 构建配置
     build: {
-      outDir: process.env.VITE_OUT_DIR || 'dist',
-      emptyOutDir: process.env.VITE_OUT_DIR ? false : true,
+      outDir: 'Civilization',
+      emptyOutDir: true,
       assetsDir: 'assets',
       cssCodeSplit: true,
       sourcemap: false,
