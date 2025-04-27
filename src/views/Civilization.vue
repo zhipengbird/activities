@@ -24,6 +24,17 @@
       </div>
     </BScroll>
     
+    <!-- 自动滚动组件 -->
+    <AutoScroll
+      ref="autoScrollRef"
+      :scrollInstance="bsInstance"
+      :interval="50"
+      :speed="2"
+      :inactivityTimeout="3000"
+      :enabled="true"
+      @scrollStateChange="handleScrollStateChange"
+    />
+    
     <!-- 提示组件 -->
     <div 
       class="hint-overlay"
@@ -66,6 +77,7 @@
 <script setup lang="ts">
 import { ENV } from "@/utils/env";
 import BScroll from "@/components/BScroll.vue";
+import AutoScroll from "@/components/AutoScroll.vue";
 import BetterScroll from "better-scroll";
 import { ref, onMounted, computed, onUnmounted, watch } from "vue";
 import { bgImages } from "@/data/data";
@@ -79,18 +91,14 @@ import bgmusic from "@/assets/bgmusic.mp3";
 const scrollRef = ref<InstanceType<typeof BScroll>>();
 const wxShareRef = ref<InstanceType<typeof WxShare>>();
 const audioRef = ref<InstanceType<typeof AudioControl>>();
+const autoScrollRef = ref<InstanceType<typeof AutoScroll>>();
 const bsInstance = ref<InstanceType<typeof BetterScroll>>();
 
 // 背景音乐URL
 const bgMusicUrl = ref(bgmusic); // 请确保路径正确
 
-// 自动滚动相关状态
+// 用户滚动状态
 const isUserScrolling = ref(false);
-const autoScrollTimer = ref<number | null>(null);
-const autoScrollInterval = 50; // 自动滚动的间隔时间（毫秒）
-const autoScrollSpeed = 1; // 自动滚动的速度（像素/间隔）
-const userInactivityTimeout = 3000; // 用户停止滚动后多久开始自动滚动（毫秒）
-let userInactivityTimer: number | null = null;
 
 // 提示相关状态
 const showHint = ref(false);
@@ -115,9 +123,6 @@ const handleBs = (bs: InstanceType<typeof BetterScroll>) => {
   
   // 检查是否需要显示横屏提示
   checkOrientation();
-  
-  // 初始化完成后启动自动滚动
-  startAutoScrollAfterDelay();
 };
 
 // 滚动处理
@@ -132,18 +137,26 @@ const handleScroll = (pos: { x: number; y: number }) => {
 const handleScrollStart = () => {
   isUserScrolling.value = true;
   hideHint();
-  stopAutoScroll();
+  
+  // 自动滚动组件会自动处理停止滚动
 };
 
 // 用户停止滚动
 const handleScrollEnd = () => {
   isUserScrolling.value = false;
-  startAutoScrollAfterDelay();
   
   // 如果不是横屏提示模式，恢复滑动提示
   if (!isLandscapeHint.value) {
     startHintTimer();
   }
+  
+  // 自动滚动组件会自动处理恢复滚动
+};
+
+// 处理滚动状态变化
+const handleScrollStateChange = (isScrolling: boolean) => {
+  // 可以在这里根据滚动状态做一些UI相关的处理
+  // 例如显示/隐藏滚动指示器等
 };
 
 // 检查屏幕方向并设置相应提示
@@ -220,64 +233,6 @@ const startHintTimer = () => {
   }, 8000); // 每8秒显示一次提示
 };
 
-// 开始自动滚动
-const startAutoScroll = () => {
-  if (autoScrollTimer.value !== null || isUserScrolling.value || !bsInstance.value) {
-    return;
-  }
-  
-  autoScrollTimer.value = window.setInterval(() => {
-    if (!bsInstance.value) return;
-    
-    const currentPos = bsInstance.value.x;
-    const maxScrollX = bsInstance.value.maxScrollX;
-    
-    // 如果已经滚动到最右侧，停止自动滚动
-    if (currentPos <= maxScrollX) {
-      stopAutoScroll();
-      return;
-    }
-    
-    // 使用BetterScroll的scrollBy方法进行平滑滚动
-    bsInstance.value.scrollBy(-autoScrollSpeed, 0, 0);
-  }, autoScrollInterval);
-};
-
-// 停止自动滚动
-const stopAutoScroll = () => {
-  if (autoScrollTimer.value !== null) {
-    clearInterval(autoScrollTimer.value);
-    autoScrollTimer.value = null;
-  }
-  
-  // 清除用户不活动计时器
-  if (userInactivityTimer !== null) {
-    clearTimeout(userInactivityTimer);
-    userInactivityTimer = null;
-  }
-};
-
-// 用户停止交互后开始自动滚动
-const startAutoScrollAfterDelay = () => {
-  if (userInactivityTimer !== null) {
-    clearTimeout(userInactivityTimer);
-  }
-  
-  userInactivityTimer = window.setTimeout(() => {
-    startAutoScroll();
-  }, userInactivityTimeout);
-};
-
-// 处理用户交互
-const handleUserInteraction = () => {
-  isUserScrolling.value = true;
-  hideHint();
-  stopAutoScroll();
-  
-  // 用户交互结束后一段时间再恢复自动滚动
-  startAutoScrollAfterDelay();
-};
-
 onMounted(() => {
   // 确保微信分享配置正确初始化
   if (wxShareRef.value && ENV.isWechat) {
@@ -289,42 +244,22 @@ onMounted(() => {
       }
     });
   }
-  
-  // 监听用户触摸/鼠标事件以检测用户活动
-  document.addEventListener('touchstart', handleUserInteraction);
-  document.addEventListener('mousedown', handleUserInteraction);
-  
-  // 初始化时显示提示
-  checkOrientation();
 });
 
 onUnmounted(() => {
-  // 清理定时器
-  stopAutoScroll();
+  // 清理提示定时器
   clearHintTimer();
-  
-  // 移除事件监听器
-  document.removeEventListener('touchstart', handleUserInteraction);
-  document.removeEventListener('mousedown', handleUserInteraction);
 });
 
 // 对外暴露方法
 defineExpose({
-  // updateShareInfo,
-  startAutoScroll,
-  stopAutoScroll
+  startAutoScroll() {
+    autoScrollRef.value?.startAutoScroll();
+  },
+  stopAutoScroll() {
+    autoScrollRef.value?.stopAutoScroll();
+  }
 });
-
-// // 手动更新分享信息
-// const updateShareInfo = (title: string, desc: string, imgUrl?: string) => {
-//   if (wxShareRef.value) {
-//     wxShareRef.value.updateShare({
-//       title,
-//       desc,
-//       imgUrl: imgUrl || shareImgUrl.value
-//     });
-//   }
-// };
 </script>
 
 <style lang="scss" scoped>
