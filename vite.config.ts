@@ -93,7 +93,7 @@ export default defineConfig(({ mode }) => {
     },
     // 构建配置
     build: {
-      outDir: 'Civilization',
+      outDir: 'dist',
       emptyOutDir: true,
       assetsDir: 'assets',
       cssCodeSplit: true,
