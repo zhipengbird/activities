@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { type ImageItem } from '@/data/data';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import '@/assets/styles/animations.scss';
 
 const props = defineProps<{
     image: ImageItem;
@@ -29,20 +30,41 @@ const floatingClass = computed(() => {
         return {};
     }
     
-    // 根据图片ID决定浮动类型
-    const lastDigit = props.image.name.charAt(props.image.name.length - 1);
-    const floatType = ['0', '3', '6', '9'].includes(lastDigit) 
-        ? 'float-up-down' 
-        : ['1', '4', '7'].includes(lastDigit) 
-            ? 'float-left-right' 
-            : 'float-scale';
+    // 获取图片ID部分用于决定动画类型
+    const nameSegments = props.image.name.split('-');
+    const groupId = parseInt(nameSegments[0]) || 0;
+    const itemId = parseInt(nameSegments[1]) || 0;
     
-    // 延迟基于图片ID
-    const delayIndex = parseInt(lastDigit) || 0;
+    // 根据组ID和项目ID组合决定使用哪种浮动动画
+    // 这样相邻的图像可以有一定的连贯性
+    const floatTypes = [
+        'float-up-down', 
+        'float-left-right', 
+        'float-scale', 
+        'custom-float-diagonal', 
+        'custom-float-rotate', 
+        'custom-float-pulse-glow',
+        'custom-float-wave',
+        'custom-float-shadow'
+    ];
+    
+    // 基于组ID选择动画类型基础索引，同一组的图像有相似动画
+    const baseIndex = groupId % floatTypes.length;
+    // 在基础索引上有小变化，但保持相邻效果的连贯性
+    const animationIndex = (baseIndex + (itemId % 3)) % floatTypes.length;
+    const floatType = floatTypes[animationIndex];
+    
+    // 延迟基于图片ID，使同组图像有交错效果
+    const delayIndex = itemId % 10;
+    
+    // 为自定义动画使用自定义延迟类
+    const delayClass = floatType.startsWith('custom-') 
+        ? `delay-custom-${delayIndex}` 
+        : `delay-${delayIndex}`;
     
     return {
         [floatType]: true,
-        [`delay-${delayIndex}`]: true
+        [delayClass]: true
     };
 });
 
@@ -57,14 +79,14 @@ const baseAndAnimationClasses = computed(() => {
         const animationClasses = props.image.className.filter(cls => cls.startsWith('animate__'));
         
         // 分离持续性动画（如pulse）和入场动画
-        const continousAnimations = animationClasses.filter(cls => 
+        const continuousAnimations = animationClasses.filter(cls => 
             cls.includes('pulse') || cls.includes('bounce') || cls.includes('flash'));
         const entranceAnimations = animationClasses.filter(cls => 
-            !continousAnimations.includes(cls));
+            !continuousAnimations.includes(cls));
         
         // 如果完成了入场动画，不再应用持续性动画
         const finalAnimations = animationCompleted.value 
-            ? entranceAnimations 
+            ? [] // 入场动画完成后不应用animate.css动画，改为自定义浮动
             : animationClasses;
             
         return [...baseClasses, 'animate__animated', ...finalAnimations];
@@ -89,14 +111,17 @@ onMounted(() => {
                 // 计算适当的等待时间
                 const hasSlow = props.image.className.some(cls => cls.includes('slow'));
                 const hasComplex = props.image.className.some(cls => 
-                    cls.includes('jackInTheBox') || cls.includes('lightSpeed'));
+                    cls.includes('jackInTheBox') || 
+                    cls.includes('lightSpeed') || 
+                    cls.includes('bounceIn') ||
+                    cls.includes('zoomIn'));
                 
                 // 根据动画类型决定等待时间
                 const waitTime = hasSlow 
-                    ? 2200 
+                    ? 2400 
                     : hasComplex 
-                        ? 2000 
-                        : 1600;
+                        ? 2200 
+                        : 1800;
                 
                 // 等待入场动画完成后启用浮动
                 setTimeout(() => {
@@ -132,34 +157,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 @use '@/data/style.scss';
 
-// 浮动动画关键帧
-@keyframes float-up-down {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-7px);
-    }
-}
-
-@keyframes float-left-right {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(5px);
-    }
-}
-
-@keyframes float-scale {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.02);
-    }
-}
-
 .image-content {
     opacity: 0;
     transition: opacity 0.6s ease;
@@ -174,26 +171,6 @@ onUnmounted(() => {
     .image {
         display: block;
         transform-origin: center;
-        
-        // 浮动动画类
-        &.float-up-down {
-            animation: float-up-down 5s ease-in-out infinite;
-        }
-        
-        &.float-left-right {
-            animation: float-left-right 6s ease-in-out infinite;
-        }
-        
-        &.float-scale {
-            animation: float-scale 7s ease-in-out infinite;
-        }
-        
-        // 延迟类
-        @for $i from 0 through 9 {
-            &.delay-#{$i} {
-                animation-delay: #{$i * 0.3}s;
-            }
-        }
     }
 }
 </style>

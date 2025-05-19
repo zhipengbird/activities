@@ -86,7 +86,7 @@ import ImageContentItem from "@components/ImageContentItem.vue";
 // import DebugPanel from "@/components/DebugPanel.vue";
 import WxShare from "@/components/WxShare.vue";
 import AudioControl from "@/components/AudioControl.vue";
-import bgmusic from "@/assets/bgmusic.mp3";
+import bgmusic from "@/assets/jiujiang.flac";
 
 const scrollRef = ref<InstanceType<typeof BScroll>>();
 const wxShareRef = ref<InstanceType<typeof WxShare>>();

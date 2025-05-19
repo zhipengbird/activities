@@ -61,27 +61,27 @@ export interface ImageItem {
 }
 
 export const imageList: ImageItem[] = [
-    { src: zero01, name: '0-0', className: ['zero-0', 'animate__lightSpeedInLeft','animate__pulse','animate__slow'] },
-    { src: zer002, name: '0-1', className: ['zero-1','animate__fadeInDownBig'] },
-    { src: one01, name: '1-0', className: ['one-0','animate__fadeInUpBig'] },
-    { src: one02, name: '1-1', className: ['one-1','animate__fadeInUpBig'] },
-    { src: one03, name: '1-2', className: ['one-2','animate__fadeInDownBig'] },
-    { src: one04, name: '1-3', className: ['one-3','animate__fadeInUpBig'] },
-    { src: one05, name: '1-4', className: ['one-4','animate__fadeInUpBig'] },
-    { src: two01, name: '2-0', className: ['two-0','animate__fadeInDownBig'] },
-    { src: two02, name: '2-1', className: ['two-1','animate__fadeInUpBig'] },
-    { src: three01, name: '3-0', className: ['three-0','animate__fadeInDownBig'] },
-    { src: three02, name: '3-1', className: ['three-1','animate__fadeInUpBig'] },
-    { src: three03, name: '3-2', className: ['three-2','animate__fadeInDownBig'] },
-    { src: three04, name: '3-3', className: ['three-3','animate__fadeInUpBig'] },
-    { src: three05, name: '3-4', className: ['three-4','animate__fadeInUpBig'] },
-    { src: three06, name: '3-5', className: ['three-5', 'animate__fadeInDownBig'] },
-    { src: four01, name: '4-0', className: ['four-0', 'animate__fadeInUpBig'] },
-    { src: four02, name: '4-1', className: ['four-1','animate__fadeInUpBig'] },
-    { src: four03, name: '4-2', className: ['four-2','animate__fadeInDownBig'] },
-    { src: five01, name: '5-0', className: ['five-0','animate__fadeInUpBig'] },
-    { src: five02, name: '5-1', className: ['five-1','animate__fadeInDownBig'] },
-    { src: six01, name: '6-0', className: ['six-0','animate__jackInTheBox'] }
+    { src: zero01, name: '0-0', className: ['zero-0', 'animate__fadeInDown', 'animate__slow'] },
+    { src: zer002, name: '0-1', className: ['zero-1', 'animate__zoomIn'] },
+    { src: one01, name: '1-0', className: ['one-0', 'animate__fadeInLeft'] },
+    { src: one02, name: '1-1', className: ['one-1', 'animate__slideInUp', 'animate__slow'] },
+    { src: one03, name: '1-2', className: ['one-2', 'animate__rotateInDownLeft'] },
+    { src: one04, name: '1-3', className: ['one-3', 'animate__fadeInRight'] },
+    { src: one05, name: '1-4', className: ['one-4', 'animate__bounceIn'] },
+    { src: two01, name: '2-0', className: ['two-0', 'animate__flipInX'] },
+    { src: two02, name: '2-1', className: ['two-1', 'animate__zoomInUp'] },
+    { src: three01, name: '3-0', className: ['three-0', 'animate__slideInDown'] },
+    { src: three02, name: '3-1', className: ['three-1', 'animate__fadeInRight', 'animate__slow'] },
+    { src: three03, name: '3-2', className: ['three-2', 'animate__backInUp'] },
+    { src: three04, name: '3-3', className: ['three-3', 'animate__rotateIn'] },
+    { src: three05, name: '3-4', className: ['three-4', 'animate__jackInTheBox'] },
+    { src: three06, name: '3-5', className: ['three-5', 'animate__lightSpeedInRight'] },
+    { src: four01, name: '4-0', className: ['four-0', 'animate__bounceInDown'] },
+    { src: four02, name: '4-1', className: ['four-1', 'animate__flipInY', 'animate__slow'] },
+    { src: four03, name: '4-2', className: ['four-2', 'animate__rollIn'] },
+    { src: five01, name: '5-0', className: ['five-0', 'animate__zoomInDown'] },
+    { src: five02, name: '5-1', className: ['five-1', 'animate__backInDown'] },
+    { src: six01, name: '6-0', className: ['six-0', 'animate__bounceInUp']}
 ]
 
 
